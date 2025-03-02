@@ -1,30 +1,27 @@
-import { DocumentMetadata } from '../types/document';
-import { generateMockExtractions } from '../utils/mockData';
-import { CustomError } from '../utils/errors';
-import DocumentModel, { IDocument } from '../models/Document';
-import ExtractionModel from '../models/Extraction';
 import { Types } from 'mongoose';
+import path from 'path';
+import { CustomError } from '../utils/errors';
+import DocumentModel, { DocumentWithTimestamps } from '../models/Document';
+import ExtractionModel from '../models/Extraction';
+import { DocumentMetadata, DocumentExtractions } from '../types/document';
+import { generateMockExtractions } from '../utils/mockData';
 
-interface DocumentWithId extends IDocument {
-  _id: Types.ObjectId;
-}
-
-const documentToMetadata = (document: DocumentWithId): DocumentMetadata => ({
-  id: document._id.toString(),
-  fileName: document.fileName,
-  uploadDate: document.uploadDate.toISOString(),
-  hasFile: !!document.filePath,
-  fileUrl: document.filePath || undefined
+const documentToMetadata = (doc: DocumentWithTimestamps): DocumentMetadata => ({
+  id: doc._id.toString(),
+  fileName: doc.fileName,
+  fileUrl: `/uploads/${path.basename(doc.filePath)}`,
+  uploadDate: doc.createdAt.toISOString(),
+  fileSize: doc.metadata.size,
+  pageCount: doc.metadata.pageCount || 0,
+  filePath: doc.filePath
 });
 
 export const getAllDocuments = async (): Promise<DocumentMetadata[]> => {
-  const documents = await DocumentModel.find().exec();
-  return documents.map(doc => documentToMetadata(doc as DocumentWithId));
+  const documents = await DocumentModel.find().lean<DocumentWithTimestamps[]>().exec();
+  return documents.map(documentToMetadata);
 };
 
-export const createDocument = async (
-  file: Express.Multer.File
-): Promise<DocumentMetadata> => {
+export const createDocument = async (file: Express.Multer.File): Promise<DocumentMetadata> => {
   if (!file) {
     throw new CustomError('No file uploaded', 400);
   }
@@ -33,72 +30,45 @@ export const createDocument = async (
     throw new CustomError('Only PDF files are allowed', 400);
   }
 
-  const document = new DocumentModel({
+  const document = await DocumentModel.create({
     title: file.originalname,
-    description: `Uploaded document`,
+    description: 'Uploaded document',
     fileName: file.originalname,
-    filePath: `/uploads/${file.filename}`,
+    filePath: file.path,
     fileType: file.mimetype,
     metadata: {
       size: file.size,
       uploadedBy: 'system',
-      version: 1
+      version: 1,
+      pageCount: 0
     }
-  }) as DocumentWithId;
-
-  await document.save();
+  });
 
   // Create mock extractions for the document
   const mockData = generateMockExtractions(document._id.toString());
-  const extraction = new ExtractionModel({
+  await ExtractionModel.create({
     documentId: document._id,
     extractions: mockData.extractions
   });
 
-  await extraction.save();
-
   return documentToMetadata(document);
 };
 
-export const getDocumentMetadata = async (documentId: string): Promise<DocumentMetadata> => {
-  const document = await DocumentModel.findById(documentId).exec();
+export const getDocumentMetadata = async (id: string): Promise<DocumentMetadata> => {
+  const document = await DocumentModel.findById(id).lean<DocumentWithTimestamps>().exec();
+  if (!document) {
+    throw new CustomError('Document not found', 404);
+  }
+  return documentToMetadata(document);
+};
+
+export const getDocumentExtractions = async (documentId: string): Promise<DocumentExtractions> => {
+  const document = await DocumentModel.findById(documentId).lean<DocumentWithTimestamps>().exec();
   if (!document) {
     throw new CustomError('Document not found', 404);
   }
 
-  return documentToMetadata(document as DocumentWithId);
-};
-
-export const getOrCreateDefaultMetadata = async (documentId: string): Promise<DocumentMetadata> => {
-  let document = await DocumentModel.findById(documentId).exec();
-
-  if (!document) {
-    document = new DocumentModel({
-      _id: new Types.ObjectId(documentId),
-      title: `Document ${documentId}`,
-      description: 'Default document',
-      fileName: `Document ${documentId}`,
-      filePath: '',
-      fileType: 'application/pdf',
-      metadata: {
-        size: 0,
-        uploadedBy: 'system',
-        version: 1
-      }
-    });
-    await document.save();
-  }
-
-  return documentToMetadata(document as DocumentWithId);
-};
-
-export const getDocumentExtractions = async (documentId: string) => {
-  const document = await DocumentModel.findById(documentId).exec();
-  if (!document) {
-    throw new CustomError('Document not found', 404);
-  }
-
-  const extraction = await ExtractionModel.findOne({ documentId: document._id }).exec();
+  const extraction = await ExtractionModel.findOne({ documentId: document._id }).lean().exec();
   if (!extraction) {
     throw new CustomError('No extractions found for this document', 404);
   }
@@ -106,12 +76,13 @@ export const getDocumentExtractions = async (documentId: string) => {
   // Return all extractions sorted by page number
   return {
     documentId,
-    extractions: extraction.extractions.sort((a, b) => a.pageNumber - b.pageNumber)
+    extractions: extraction.extractions.sort((a, b) => a.pageNumber - b.pageNumber),
+    totalPages: document.metadata.pageCount || 1
   };
 };
 
 export const deleteDocument = async (documentId: string): Promise<void> => {
-  const document = await DocumentModel.findById(documentId).exec();
+  const document = await DocumentModel.findById(documentId).lean<DocumentWithTimestamps>().exec();
   if (!document) {
     throw new CustomError('Document not found', 404);
   }

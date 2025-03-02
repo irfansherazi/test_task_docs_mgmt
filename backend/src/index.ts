@@ -3,13 +3,14 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
-import mongoose from 'mongoose';
 import documentRoutes from './routes/documents';
 import authRoutes from './routes/auth';
 import { errorHandler } from './middleware/errorHandler';
 import { MAX_FILE_SIZE } from './middleware/upload';
 import { ensureAdminExists } from './models/User';
 import { connectDB } from './modules/database';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger';
 
 dotenv.config();
 
@@ -29,6 +30,15 @@ app.use(express.urlencoded({ extended: true, limit: MAX_FILE_SIZE }));
 
 // Serve uploaded files statically
 app.use('/uploads', express.static(uploadsDir));
+
+// API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  swaggerOptions: {
+    persistAuthorization: true
+  },
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'Document Management API Documentation'
+}));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -63,6 +73,7 @@ connectDB()
     // Start server
     app.listen(port, () => {
       console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+      console.log(`API Documentation available at http://localhost:${port}/api-docs`);
     });
   })
   .catch(err => {
