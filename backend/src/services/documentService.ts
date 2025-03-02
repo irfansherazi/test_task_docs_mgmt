@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
 import path from 'path';
+import fs from 'fs';
 import { CustomError } from '../utils/errors';
 import DocumentModel, { DocumentWithTimestamps } from '../models/Document';
 import ExtractionModel from '../models/Extraction';
@@ -59,6 +60,12 @@ export const getDocumentMetadata = async (id: string): Promise<DocumentMetadata>
   if (!document) {
     throw new CustomError('Document not found', 404);
   }
+
+  // Check if the file exists
+  if (!fs.existsSync(document.filePath)) {
+    throw new CustomError('Document file not found on disk', 404);
+  }
+
   return documentToMetadata(document);
 };
 
@@ -66,6 +73,11 @@ export const getDocumentExtractions = async (documentId: string): Promise<Docume
   const document = await DocumentModel.findById(documentId).lean<DocumentWithTimestamps>().exec();
   if (!document) {
     throw new CustomError('Document not found', 404);
+  }
+
+  // Check if the file exists
+  if (!fs.existsSync(document.filePath)) {
+    throw new CustomError('Document file not found on disk', 404);
   }
 
   const extraction = await ExtractionModel.findOne({ documentId: document._id }).lean().exec();

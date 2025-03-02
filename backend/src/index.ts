@@ -11,6 +11,7 @@ import { ensureAdminExists } from './models/User';
 import { connectDB } from './modules/database';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger';
+import { cleanupOrphanedDocuments } from './utils/documentCleanup';
 
 dotenv.config();
 
@@ -69,6 +70,9 @@ connectDB()
 
     // Create admin user
     await ensureAdminExists();
+
+    // Cleanup orphaned documents
+    await cleanupOrphanedDocuments();
 
     // Start server
     app.listen(port, () => {
