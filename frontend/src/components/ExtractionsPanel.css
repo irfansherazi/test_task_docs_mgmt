@@ -1,0 +1,135 @@
+.extractions-panel {
+    width: 300px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-left: 1px solid #dee2e6;
+    overflow-y: auto;
+    height: 100%;
+}
+
+.extractions-panel h3 {
+    margin: 0 0 12px;
+    color: #2c3e50;
+    font-size: 1.2rem;
+}
+
+.page-summary {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.no-extractions {
+    color: #6b7280;
+    text-align: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.extractions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.page-group {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    transition: border-color 0.2s ease;
+}
+
+.page-group.current {
+    border: 2px solid #4a90e2;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.page-header h4 {
+    margin: 0;
+    color: #334155;
+    font-size: 1rem;
+    flex: 1;
+}
+
+.page-stats {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-right: 8px;
+}
+
+.go-to-page-button {
+    padding: 6px 12px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+}
+
+.go-to-page-button:hover {
+    background-color: #357abd;
+}
+
+.page-extractions {
+    padding: 16px;
+}
+
+.extraction-item {
+    padding: 12px;
+    border-radius: 6px;
+    background-color: #f8fafc;
+    margin-bottom: 8px;
+    border: 1px solid #e2e8f0;
+    transition: background-color 0.2s ease;
+}
+
+.extraction-item:hover {
+    background-color: #f1f5f9;
+}
+
+.extraction-item:last-child {
+    margin-bottom: 0;
+}
+
+.extraction-text {
+    color: #334155;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Scrollbar styling */
+.extractions-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.extractions-panel::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.extractions-panel::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.extractions-panel::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
