@@ -1,0 +1,207 @@
+@import '../styles/theme.css';
+
+.upload-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 0;
+  width: 90%;
+  max-width: 500px;
+  outline: none;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-primary);
+}
+
+.upload-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-primary);
+  background-color: var(--bg-tertiary);
+  border-radius: 12px 12px 0 0;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.close-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  padding: 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  width: 36px;
+  height: 36px;
+}
+
+.close-button:hover {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.upload-form {
+  padding: 1.5rem;
+  background-color: var(--bg-secondary);
+  border-radius: 0 0 12px 12px;
+}
+
+.file-drop-zone {
+  position: relative;
+  padding: 2rem;
+  border: 2px dashed var(--border-primary);
+  border-radius: 8px;
+  background-color: var(--bg-tertiary);
+  transition: var(--transition-fast);
+  cursor: pointer;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.file-drop-zone.dragging {
+  border-color: var(--color-primary);
+  background-color: var(--bg-elevated);
+}
+
+.file-drop-zone.has-file {
+  border-style: solid;
+  border-color: var(--color-success);
+}
+
+.file-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.upload-icon {
+  margin-bottom: 1rem;
+  color: var(--text-tertiary);
+  transition: var(--transition-fast);
+}
+
+.file-drop-zone:hover .upload-icon,
+.file-drop-zone.dragging .upload-icon {
+  color: var(--color-primary);
+  transform: translateY(-4px);
+}
+
+.file-drop-zone.has-file .upload-icon {
+  color: var(--color-success);
+}
+
+.upload-text {
+  margin-bottom: 1rem;
+}
+
+.primary-text {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+}
+
+.secondary-text {
+  color: var(--text-tertiary);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.selected-file {
+  color: var(--color-success);
+  font-size: 1rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.file-requirements {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin: 0.5rem 0 0 0;
+}
+
+.error-message {
+  color: var(--color-error);
+  font-size: 0.9rem;
+  margin: 0.5rem 0 0 0;
+  background-color: var(--bg-elevated);
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-error);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.cancel-button,
+.submit-button {
+  padding: 0.75rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: var(--transition-fast);
+}
+
+.cancel-button {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  color: var(--text-secondary);
+}
+
+.cancel-button:hover {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.submit-button {
+  background-color: var(--button-bg);
+  border: none;
+  color: var(--button-text);
+  min-width: 140px;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: var(--button-hover);
+  transform: translateY(-1px);
+}
+
+.submit-button:disabled {
+  background-color: var(--button-disabled);
+  cursor: not-allowed;
+  color: var(--text-disabled);
+  transform: none;
+}
