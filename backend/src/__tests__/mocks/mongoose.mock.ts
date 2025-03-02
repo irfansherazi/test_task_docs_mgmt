@@ -1,10 +1,17 @@
 import { jest } from '@jest/globals';
 import { Types } from 'mongoose';
 
+// Define the structure of items stored in the mock database
 interface MockItem {
     _id: Types.ObjectId;
     [key: string]: any;
 }
+
+// Define mongoose-like return types
+type DeleteResult = { deletedCount: number };
+
+// Need to re-type Jest's mock functionality to match our needs
+type MockFn = ReturnType<typeof jest.fn>;
 
 export class MockModel {
     static mockData: MockItem[] = [];
@@ -15,43 +22,53 @@ export class MockModel {
         this.mockById = {};
     }
 
-    static find = jest.fn().mockImplementation(() => ({
-        lean: jest.fn().mockImplementation(() => ({
-            exec: jest.fn().mockResolvedValue(this.mockData)
-        }))
-    }));
+    // Create the mock functions with proper type assertions
+    static find: MockFn = jest.fn();
+    static findById: MockFn = jest.fn();
+    static findOne: MockFn = jest.fn();
+    static deleteOne: MockFn = jest.fn();
+    static create: MockFn = jest.fn();
 
-    static findById = jest.fn().mockImplementation((id: string) => ({
-        lean: jest.fn().mockImplementation(() => ({
-            exec: jest.fn().mockResolvedValue(this.mockById[id] || null)
-        }))
-    }));
+    // Initialize the mocks
+    static {
+        this.find.mockImplementation(() => ({
+            lean: () => ({
+                exec: () => Promise.resolve(this.mockData)
+            })
+        }));
 
-    static findOne = jest.fn().mockImplementation((criteria: Record<string, any>) => ({
-        lean: jest.fn().mockImplementation(() => ({
-            exec: jest.fn().mockResolvedValue(
-                this.mockData.find(item =>
-                    Object.entries(criteria).every(([key, value]) => item[key] === value)
-                ) || null
-            )
-        }))
-    }));
+        this.findById.mockImplementation((id: string) => ({
+            lean: () => ({
+                exec: () => Promise.resolve(this.mockById[id] || null)
+            })
+        }));
 
-    static deleteOne = jest.fn().mockImplementation(() => ({
-        exec: jest.fn().mockResolvedValue({ deletedCount: 1 })
-    }));
+        this.findOne.mockImplementation((criteria: Record<string, any>) => ({
+            lean: () => ({
+                exec: () => Promise.resolve(
+                    this.mockData.find(item =>
+                        Object.entries(criteria).every(([key, value]) => item[key] === value)
+                    ) || null
+                )
+            })
+        }));
 
-    static create = jest.fn().mockImplementation((data: Record<string, any>) => {
-        const newItem: MockItem = {
-            ...data,
-            _id: new Types.ObjectId(),
-            createdAt: new Date(),
-            updatedAt: new Date()
-        };
-        this.mockData.push(newItem);
-        this.mockById[newItem._id.toString()] = newItem;
-        return Promise.resolve(newItem);
-    });
+        this.deleteOne.mockImplementation(() => ({
+            exec: () => Promise.resolve({ deletedCount: 1 } as DeleteResult)
+        }));
+
+        this.create.mockImplementation((data: Record<string, any>) => {
+            const newItem: MockItem = {
+                ...data,
+                _id: new Types.ObjectId(),
+                createdAt: new Date(),
+                updatedAt: new Date()
+            };
+            this.mockData.push(newItem);
+            this.mockById[newItem._id.toString()] = newItem;
+            return Promise.resolve(newItem);
+        });
+    }
 }
 
 export const createMockDocument = (override: Record<string, any> = {}): MockItem => ({
