@@ -1,3 +1,5 @@
+@import './theme.css';
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -12,14 +14,16 @@
 }
 
 .modal {
-    background-color: white;
+    background-color: var(--bg-secondary);
     border-radius: 8px;
     padding: 20px;
     position: relative;
     max-width: 90vw;
     max-height: 90vh;
     overflow: auto;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-primary);
+    color: var(--text-primary);
 }
 
 .modal-close {
@@ -30,14 +34,15 @@
     border: none;
     font-size: 24px;
     cursor: pointer;
-    color: #666;
+    color: var(--text-tertiary);
     padding: 5px 10px;
     border-radius: 4px;
-    transition: background-color 0.2s;
+    transition: var(--transition-fast);
 }
 
 .modal-close:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
 }
 
 /* Document Details Modal specific styles */
@@ -59,7 +64,7 @@
     flex: 1;
     padding: 20px;
     overflow: auto;
-    border-right: 1px solid #eee;
+    border-right: 1px solid var(--border-primary);
 }
 
 .document-details-modal .pagination {
@@ -69,27 +74,29 @@
     gap: 10px;
     margin-top: 15px;
     padding: 10px;
-    background-color: #f5f5f5;
+    background-color: var(--bg-tertiary);
     border-radius: 4px;
 }
 
 .document-details-modal .pagination button {
     padding: 5px 10px;
-    background-color: #fff;
-    border: 1px solid #ddd;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
     border-radius: 4px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: var(--transition-fast);
+    color: var(--text-primary);
 }
 
 .document-details-modal .pagination button:hover:not(:disabled) {
-    background-color: #f0f0f0;
-    border-color: #ccc;
+    background-color: var(--bg-elevated);
+    border-color: var(--border-hover);
 }
 
 .document-details-modal .pagination button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    color: var(--text-disabled);
 }
 
 .document-details-modal .loading {
@@ -97,7 +104,8 @@
     justify-content: center;
     align-items: center;
     height: 200px;
-    color: #666;
+    color: var(--text-secondary);
+    background-color: var(--bg-tertiary);
 }
 
 .document-details-modal .error {
@@ -105,10 +113,11 @@
     justify-content: center;
     align-items: center;
     height: 200px;
-    color: #dc3545;
+    color: var(--color-error);
     text-align: center;
     padding: 20px;
-    background-color: #fff3f4;
+    background-color: var(--bg-elevated);
     border-radius: 4px;
     margin: 20px;
+    border: 1px solid var(--color-error);
 }

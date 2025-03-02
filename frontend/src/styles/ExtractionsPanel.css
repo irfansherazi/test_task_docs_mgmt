@@ -1,34 +1,38 @@
+@import './theme.css';
+
 .extractions-panel {
     width: 400px;
     padding: 20px;
-    background-color: #f8f9fa;
-    border-left: 1px solid #eee;
+    background-color: var(--bg-secondary);
+    border-left: 1px solid var(--border-primary);
     overflow-y: auto;
 }
 
 .extractions-panel h3 {
     margin: 0 0 12px 0;
-    color: #333;
+    color: var(--text-primary);
     font-size: 18px;
 }
 
 .page-summary {
     margin-bottom: 20px;
     padding: 10px;
-    background-color: #fff;
+    background-color: var(--bg-tertiary);
     border-radius: 4px;
-    color: #666;
+    color: var(--text-secondary);
     font-size: 14px;
     text-align: center;
+    border: 1px solid var(--border-primary);
 }
 
 .no-extractions {
     padding: 20px;
     text-align: center;
-    color: #666;
-    background-color: #fff;
+    color: var(--text-secondary);
+    background-color: var(--bg-tertiary);
     border-radius: 4px;
     margin: 20px 0;
+    border: 1px solid var(--border-primary);
 }
 
 .extractions-list {
@@ -38,59 +42,63 @@
 }
 
 .page-group {
-    background-color: #fff;
+    background-color: var(--bg-tertiary);
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
+    border: 1px solid var(--border-primary);
 }
 
 .page-header {
     display: flex;
     align-items: center;
     padding: 12px 16px;
-    background-color: #f1f3f5;
-    border-bottom: 1px solid #eee;
+    background-color: var(--bg-elevated);
+    border-bottom: 1px solid var(--border-primary);
 }
 
 .page-header h4 {
     margin: 0;
     font-size: 16px;
-    color: #333;
+    color: var(--text-primary);
     flex: 1;
 }
 
 .page-stats {
     font-size: 12px;
-    color: #666;
+    color: var(--text-secondary);
     margin-right: 12px;
 }
 
 .go-to-page-button {
     padding: 6px 12px;
-    background-color: #fff;
-    border: 1px solid #ddd;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
     border-radius: 4px;
     cursor: pointer;
     font-size: 12px;
-    transition: all 0.2s;
+    transition: var(--transition-fast);
     white-space: nowrap;
+    color: var(--text-primary);
 }
 
 .go-to-page-button:hover:not(:disabled) {
-    background-color: #f0f0f0;
-    border-color: #ccc;
+    background-color: var(--button-bg);
+    border-color: var(--button-hover);
+    color: var(--button-text);
 }
 
 .go-to-page-button:disabled {
-    background-color: #e9ecef;
+    background-color: var(--button-disabled);
     cursor: not-allowed;
-    opacity: 0.7;
+    color: var(--text-disabled);
 }
 
 .extraction-item {
     padding: 12px 16px;
-    border-bottom: 1px solid #eee;
-    transition: background-color 0.2s;
+    border-bottom: 1px solid var(--border-primary);
+    transition: var(--transition-fast);
+    background-color: var(--bg-tertiary);
 }
 
 .extraction-item:last-child {
@@ -98,12 +106,12 @@
 }
 
 .extraction-item:hover {
-    background-color: #f8f9fa;
+    background-color: var(--bg-elevated);
 }
 
 .extraction-text {
     font-size: 14px;
-    color: #333;
+    color: var(--text-primary);
     line-height: 1.5;
     margin-bottom: 8px;
 }
@@ -111,14 +119,14 @@
 .extraction-confidence,
 .extraction-category {
     font-size: 12px;
-    color: #666;
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
     gap: 4px;
 }
 
 .extraction-confidence {
-    color: #28a745;
+    color: var(--color-success);
 }
 
 .loading,
@@ -130,11 +138,31 @@
 }
 
 .loading {
-    color: #666;
-    background-color: #fff;
+    color: var(--text-secondary);
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
 }
 
 .error {
-    color: #dc3545;
-    background-color: #fff3f4;
+    color: var(--color-error);
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--color-error);
+}
+
+/* Scrollbar styling */
+.extractions-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.extractions-panel::-webkit-scrollbar-track {
+    background: var(--bg-tertiary);
+}
+
+.extractions-panel::-webkit-scrollbar-thumb {
+    background: var(--border-primary);
+    border-radius: 4px;
+}
+
+.extractions-panel::-webkit-scrollbar-thumb:hover {
+    background: var(--border-hover);
 }

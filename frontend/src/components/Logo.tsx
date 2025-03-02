@@ -1,8 +1,8 @@
 import React from 'react';
 
 const Logo: React.FC = () => (
-  <svg fill="#000000" height="32px" width="32px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 40.029 40.029">
+  <svg height="32px" width="32px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 40.029 40.029" style={{ fill: 'var(--color-primary)' }}>
     <g>
       <g id="b123_geometrical_shape">
         <path d="M34.408,10.246L23.48,10.367l-5.359,9.527l5.572,9.402l10.928-0.123l5.359-9.525L34.408,10.246z M33.661,27.551
