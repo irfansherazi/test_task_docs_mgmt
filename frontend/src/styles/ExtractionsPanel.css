@@ -1,0 +1,140 @@
+.extractions-panel {
+    width: 400px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-left: 1px solid #eee;
+    overflow-y: auto;
+}
+
+.extractions-panel h3 {
+    margin: 0 0 12px 0;
+    color: #333;
+    font-size: 18px;
+}
+
+.page-summary {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 4px;
+    color: #666;
+    font-size: 14px;
+    text-align: center;
+}
+
+.no-extractions {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+    background-color: #fff;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+.extractions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.page-group {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: #f1f3f5;
+    border-bottom: 1px solid #eee;
+}
+
+.page-header h4 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+    flex: 1;
+}
+
+.page-stats {
+    font-size: 12px;
+    color: #666;
+    margin-right: 12px;
+}
+
+.go-to-page-button {
+    padding: 6px 12px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.go-to-page-button:hover:not(:disabled) {
+    background-color: #f0f0f0;
+    border-color: #ccc;
+}
+
+.go-to-page-button:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.extraction-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s;
+}
+
+.extraction-item:last-child {
+    border-bottom: none;
+}
+
+.extraction-item:hover {
+    background-color: #f8f9fa;
+}
+
+.extraction-text {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.extraction-confidence,
+.extraction-category {
+    font-size: 12px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.extraction-confidence {
+    color: #28a745;
+}
+
+.loading,
+.error {
+    padding: 20px;
+    text-align: center;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+.loading {
+    color: #666;
+    background-color: #fff;
+}
+
+.error {
+    color: #dc3545;
+    background-color: #fff3f4;
+}
