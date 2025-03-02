@@ -3,10 +3,13 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
-import { connectDB } from './modules/database';
-import documentRoutes from './routes/documentRoutes';
+import mongoose from 'mongoose';
+import documentRoutes from './routes/documents';
+import authRoutes from './routes/auth';
 import { errorHandler } from './middleware/errorHandler';
 import { MAX_FILE_SIZE } from './middleware/upload';
+import { ensureAdminExists } from './models/User';
+import { connectDB } from './modules/database';
 
 dotenv.config();
 
@@ -28,11 +31,12 @@ app.use(express.urlencoded({ extended: true, limit: MAX_FILE_SIZE }));
 app.use('/uploads', express.static(uploadsDir));
 
 // Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/documents', documentRoutes);
 
 // API routes and error handling
 app.get('/api', (req, res) => {
-  res.json({ message: 'Welcome to the Legal Document Management API' });
+  res.json({ message: 'Welcome to the Document Management API' });
 });
 
 app.get('/api/*', (req, res) => {
@@ -40,22 +44,28 @@ app.get('/api/*', (req, res) => {
 });
 
 // Serve frontend
-app.use(express.static(path.join(__dirname, '../../frontend', 'dist')))
+app.use(express.static(path.join(__dirname, '../../frontend', 'dist')));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, '../../frontend', 'dist', 'index.html'))
+  res.sendFile(path.join(__dirname, '../../frontend', 'dist', 'index.html'));
 });
 
 // Error handling middleware
 app.use(errorHandler);
 
-// Connect to MongoDB
-connectDB().then(() => {
-  console.log('Connected to MongoDB');
-  // Start server
-  app.listen(port, () => {
-    console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+connectDB()
+  .then(async () => {
+    console.log('Connected to MongoDB');
+
+    // Create admin user
+    await ensureAdminExists();
+
+    // Start server
+    app.listen(port, () => {
+      console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+    });
+  })
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
   });
-}).catch((error) => {
-  process.exit(1);
-});
