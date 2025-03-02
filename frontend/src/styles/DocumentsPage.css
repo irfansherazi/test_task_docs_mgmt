@@ -1,0 +1,84 @@
+@import './theme.css';
+
+.documents-page {
+    min-height: 100vh;
+    background-color: var(--bg-primary);
+    padding: 20px;
+}
+
+.documents-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-primary);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-left h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-info {
+    color: var(--text-secondary);
+}
+
+.logout-button {
+    padding: 0.5rem 1rem;
+    background-color: var(--color-error);
+    color: var(--button-text);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.logout-button:hover {
+    background-color: var(--color-error);
+    opacity: 0.9;
+}
+
+.document-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+.loading-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-primary);
+}
+
+.error-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 1rem;
+    background-color: var(--bg-elevated);
+    color: var(--color-error);
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    border: 1px solid var(--color-error);
+}
