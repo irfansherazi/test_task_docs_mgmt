@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { login } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import '../styles/LoginPage.css';
+
+interface LocationState {
+    from?: {
+        pathname: string;
+    };
+}
 
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -10,7 +16,17 @@ const LoginPage: React.FC = () => {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
-    const { checkAuth } = useAuth();
+    const location = useLocation();
+    const { checkAuth, isAuthenticated } = useAuth();
+    const locationState = location.state as LocationState;
+    const from = locationState?.from?.pathname || '/documents';
+
+    // Redirect if already authenticated
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate(from);
+        }
+    }, [isAuthenticated, navigate, from]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -24,8 +40,8 @@ const LoginPage: React.FC = () => {
             localStorage.setItem('user', JSON.stringify(response.user));
             // Update auth context state
             checkAuth();
-            // Redirect to documents page
-            navigate('/documents');
+            // Redirect to previous page or documents page
+            navigate(from);
         } catch (err: any) {
             setError(err.message || 'Failed to login');
         } finally {

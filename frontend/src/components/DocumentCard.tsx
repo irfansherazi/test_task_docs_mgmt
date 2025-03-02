@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { DocumentMetadata } from '../types/document';
 import { TrashIcon } from '../utils/icons';
 import UploadModal from './UploadModal';
-import './DocumentBox.css';
+import './DocumentCard.css';
 
-interface DocumentBoxProps {
+interface DocumentCardProps {
   metadata: DocumentMetadata | null;
   onUpload?: (file: File) => void;
   onView?: () => void;
   onDelete?: () => void;
 }
 
-const DocumentBox: React.FC<DocumentBoxProps> = ({ metadata, onUpload, onView, onDelete }) => {
+const DocumentCard: React.FC<DocumentCardProps> = ({ metadata, onUpload, onView, onDelete }) => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
 
@@ -88,4 +88,4 @@ const DocumentBox: React.FC<DocumentBoxProps> = ({ metadata, onUpload, onView, o
   );
 };
 
-export default DocumentBox; 
+export default DocumentCard; 

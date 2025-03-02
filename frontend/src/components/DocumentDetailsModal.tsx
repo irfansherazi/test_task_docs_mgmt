@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Document, Page } from 'react-pdf';
 import Modal from './Modal';
 import ExtractionsPanel from './ExtractionsPanel';
@@ -14,7 +14,7 @@ interface DocumentDetailsModalProps {
   metadata: DocumentMetadata | null;
 }
 
-const DocumentDetailsModal: React.FC<DocumentDetailsModalProps> = ({
+const DocumentDetailsModal: React.FC<DocumentDetailsModalProps> = React.memo(({
   isOpen,
   onClose,
   documentId,
@@ -25,17 +25,20 @@ const DocumentDetailsModal: React.FC<DocumentDetailsModalProps> = ({
   const [extractions, setExtractions] = useState<DocumentExtractions | null>(null);
   const [isLoadingExtractions, setIsLoadingExtractions] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen && documentId) {
       fetchExtractions();
+      fetchPdfFile();
     } else {
       setExtractions(null);
       setError(null);
+      setPdfBlobUrl(null);
     }
   }, [isOpen, documentId]);
 
-  const fetchExtractions = async () => {
+  const fetchExtractions = useCallback(async () => {
     try {
       setIsLoadingExtractions(true);
       setError(null);
@@ -47,37 +50,51 @@ const DocumentDetailsModal: React.FC<DocumentDetailsModalProps> = ({
     } finally {
       setIsLoadingExtractions(false);
     }
-  };
+  }, [documentId]);
 
-  const handleDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+  const fetchPdfFile = useCallback(async () => {
+    if (metadata) {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_BASE_URL}/documents/${metadata.id}/file`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        setPdfBlobUrl(blobUrl);
+      } catch (error) {
+        console.error('Error fetching PDF file:', error);
+        setError('Failed to load PDF file');
+      }
+    }
+  }, [metadata]);
+
+  const handleDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
-  };
+  }, []);
 
-  const goToPage = (pageNumber: number) => {
+  const goToPage = useCallback((pageNumber: number) => {
     if (pageNumber >= 1 && pageNumber <= (numPages || 1)) {
       setCurrentPage(pageNumber);
     }
-  };
+  }, [numPages]);
 
-  // Get the authentication token
-  const token = localStorage.getItem('token');
-
-  // Construct the full URL to the PDF file
-  const fileUrl = metadata ? `${API_BASE_URL}/documents/${metadata.id}/file` : null;
-
-  // Configure options for the PDF request
-  const options = {
-    httpHeaders: {
-      'Authorization': `Bearer ${token}`
-    }
-  };
+  useEffect(() => {
+    return () => {
+      if (pdfBlobUrl) {
+        URL.revokeObjectURL(pdfBlobUrl);
+      }
+    };
+  }, [pdfBlobUrl]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="document-details-modal">
       <div className="modal-content">
         <div className="pdf-viewer">
           <Document
-            file={fileUrl ? { url: fileUrl, ...options } : null}
+            file={pdfBlobUrl}
             onLoadSuccess={handleDocumentLoadSuccess}
             loading={<div className="loading">Loading PDF...</div>}
             error={<div className="error">Failed to load PDF</div>}
@@ -114,11 +131,11 @@ const DocumentDetailsModal: React.FC<DocumentDetailsModalProps> = ({
           error={error}
           currentPage={currentPage}
           onPageChange={goToPage}
-          totalPages={extractions?.totalPages || 0}
+          totalPages={numPages || 0}
         />
       </div>
     </Modal>
   );
-};
+});
 
 export default DocumentDetailsModal; 

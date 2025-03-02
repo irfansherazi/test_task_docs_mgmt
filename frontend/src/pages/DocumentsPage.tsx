@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { pdfjs } from 'react-pdf';
-import DocumentBox from '../components/DocumentBox';
+import DocumentCard from '../components/DocumentCard';
 import DocumentDetailsModal from '../components/DocumentDetailsModal';
 import Logo from '../components/Logo';
 import { DocumentMetadata } from '../types/document';
@@ -90,14 +90,14 @@ const DocumentsPage: React.FC = () => {
                 ) : (
                     <>
                         {/* Empty upload box */}
-                        <DocumentBox
+                        <DocumentCard
                             key="upload"
                             metadata={null}
                             onUpload={handleUpload}
                         />
                         {/* Uploaded documents */}
                         {documents.map(doc => (
-                            <DocumentBox
+                            <DocumentCard
                                 key={doc.id}
                                 metadata={doc}
                                 onView={() => handleView(doc.id)}

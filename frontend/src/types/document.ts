@@ -21,7 +21,7 @@ export interface DocumentExtractions {
   totalPages: number;
 }
 
-export interface DocumentBoxProps {
+export interface DocumentCardProps {
   id: string;
   metadata: DocumentMetadata | null;
   onUpload: (file: File) => void;

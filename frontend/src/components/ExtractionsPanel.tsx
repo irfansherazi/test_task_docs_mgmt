@@ -46,6 +46,10 @@ const ExtractionsPanel: React.FC<ExtractionsPanelProps> = ({
   // Group extractions by page
   const extractionsByPage = extractions.reduce((acc, extraction) => {
     const page = extraction.pageNumber;
+    // Skip extractions with page numbers exceeding the total pages
+    if (page > totalPages) {
+      return acc;
+    }
     if (!acc[page]) {
       acc[page] = [];
     }

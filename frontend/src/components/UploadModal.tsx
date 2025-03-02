@@ -15,10 +15,15 @@ const UploadModal: React.FC<UploadModalProps> = ({
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string>('');
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    handleFile(file);
+  };
+
+  const handleFile = (file: File | undefined | null) => {
     if (!file) {
       setError('Please select a file');
       return;
@@ -49,10 +54,32 @@ const UploadModal: React.FC<UploadModalProps> = ({
   const handleClose = () => {
     setSelectedFile(null);
     setError('');
+    setIsDragging(false);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
     onClose();
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const file = e.dataTransfer.files[0];
+    handleFile(file);
   };
 
   return (
@@ -64,10 +91,20 @@ const UploadModal: React.FC<UploadModalProps> = ({
     >
       <div className="modal-header">
         <h2>Upload Legal Document</h2>
-        <button onClick={handleClose} className="close-button">×</button>
+        <button onClick={handleClose} className="close-button" aria-label="Close">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M18 6L6 18M6 6l12 12" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </button>
       </div>
       <form onSubmit={handleSubmit} className="upload-form">
-        <div className="file-input-container">
+        <div
+          className={`file-drop-zone ${isDragging ? 'dragging' : ''} ${selectedFile ? 'has-file' : ''}`}
+          onDragEnter={handleDragEnter}
+          onDragOver={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
           <input
             type="file"
             accept=".pdf,application/pdf"
@@ -75,6 +112,23 @@ const UploadModal: React.FC<UploadModalProps> = ({
             ref={fileInputRef}
             className="file-input"
           />
+          <div className="upload-icon" onClick={() => fileInputRef.current?.click()}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" strokeWidth="2" strokeLinecap="round" />
+              <path d="M17 8l-5-5-5 5" strokeWidth="2" strokeLinecap="round" />
+              <path d="M12 3v12" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </div>
+          <div className="upload-text">
+            {selectedFile ? (
+              <p className="selected-file">{selectedFile.name}</p>
+            ) : (
+              <>
+                <p className="primary-text">Drag & drop your PDF here</p>
+                <p className="secondary-text">or click to browse</p>
+              </>
+            )}
+          </div>
           <p className="file-requirements">Accepted format: PDF only</p>
           {error && <p className="error-message">{error}</p>}
         </div>
@@ -87,7 +141,7 @@ const UploadModal: React.FC<UploadModalProps> = ({
             className="submit-button"
             disabled={!selectedFile || !!error}
           >
-            Upload
+            Upload Document
           </button>
         </div>
       </form>
